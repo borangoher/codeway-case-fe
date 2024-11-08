@@ -19,16 +19,16 @@ const emit = defineEmits<{
 }>()
 
 const isEditing: Ref<boolean> = ref(false)
-const paramState: Ref<parameter> = ref({...props.param})
+const paramState: Ref<parameter> = ref({ ...props.param })
 
 function toggleEdit(): void {
-  isEditing.value = true;
+  isEditing.value = true
 }
 
 function cancelEdit(): void {
-console.log(props.param);
-  paramState.value = props.param;
-  isEditing.value = false;
+  console.log(props.param)
+  paramState.value = props.param
+  isEditing.value = false
 }
 function saveChanges(): void {
   emit('edit', paramState.value)
@@ -43,9 +43,27 @@ function deleteParam(): void {
 <template>
   <div class="param-line">
     <template v-if="isEditing">
-      <input class="param-input" type="text" name="paramKey" id="paramKey" v-model="paramState.key" />
-      <input class="param-input" type="text" name="paramValue" id="paramValue" v-model="paramState.value" />
-      <input class="param-input" type="text" name="paramDesc" id="paramDesc" v-model="paramState.desc" />
+      <input
+        class="param-input"
+        type="text"
+        name="paramKey"
+        id="paramKey"
+        v-model="paramState.key"
+      />
+      <input
+        class="param-input"
+        type="text"
+        name="paramValue"
+        id="paramValue"
+        v-model="paramState.value"
+      />
+      <input
+        class="param-input"
+        type="text"
+        name="paramDesc"
+        id="paramDesc"
+        v-model="paramState.desc"
+      />
     </template>
     <template v-else>
       <p>{{ paramState.key }}</p>
@@ -87,7 +105,7 @@ function deleteParam(): void {
   color: white;
 
   &:hover {
-    background-color: blue
+    background-color: blue;
   }
 }
 
@@ -96,7 +114,7 @@ function deleteParam(): void {
   color: white;
 
   &:hover {
-    background-color: red
+    background-color: red;
   }
 }
 

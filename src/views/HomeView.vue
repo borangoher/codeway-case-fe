@@ -32,25 +32,23 @@ const parameters: Ref<[parameter]> = ref([
 function deleteParam(id: number): void {
   parameters.value = parameters.value.filter((param: parameter) => {
     return param.id !== id
-  });
+  })
   console.log(parameters.value)
 }
 
 function editParam(newParam: parameter): void {
   parameters.value = parameters.value.map((oldParam: parameter) => {
     return oldParam.id === newParam.id ? newParam : oldParam
-  });
+  })
 }
 </script>
 
 <template>
   <main>
     <div class="header">
-      <img src="../assets/icon.png" alt="Codeway Logo">
+      <img src="../assets/icon.png" alt="Codeway Logo" />
       <button class="logout-button">
-        <router-link to="/signin">
-          Log Out
-        </router-link>
+        <router-link to="/signin"> Log Out </router-link>
       </button>
     </div>
     <div class="container">
@@ -61,11 +59,7 @@ function editParam(newParam: parameter): void {
         <p>Created Date</p>
       </div>
       <template v-for="parameter in parameters" :key="parameter.id">
-        <PropertyConfig
-          :param="parameter"
-          @delete="deleteParam"
-          @edit="editParam"
-        />
+        <PropertyConfig :param="parameter" @delete="deleteParam" @edit="editParam" />
       </template>
     </div>
   </main>
@@ -98,6 +92,6 @@ function editParam(newParam: parameter): void {
 }
 
 img {
-  width: 5rem
+  width: 5rem;
 }
 </style>

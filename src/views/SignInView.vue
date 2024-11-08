@@ -11,8 +11,21 @@ const password: Ref<string> = ref('')
 const isEmailValid: Ref<boolean> = ref(true)
 const isPasswordValid: Ref<boolean> = ref(true)
 
+function validateEmail(email: string): boolean {
+  return email
+    .toLowerCase()
+    .match(
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+    )
+}
+
 function signin(): void {
-  router.push('/')
+  isEmailValid.value = validateEmail(email.value)
+  isPasswordValid.value = password.value.length > 7
+
+  if (isEmailValid.value && isPasswordValid.value) {
+    router.push('/')
+  }
 }
 </script>
 
@@ -22,7 +35,7 @@ function signin(): void {
     <p class="signin-text">Please Sign In</p>
     <input
       class="signin-input"
-      type="text"
+      type="email"
       name="email"
       id="email"
       placeholder="E-mail address"
@@ -36,6 +49,9 @@ function signin(): void {
       placeholder="Password"
       v-model="password"
     />
+
+    <p class="error-text" v-if="!isEmailValid">Please enter a valid email.</p>
+    <p class="error-text" v-if="!isPasswordValid">Password must be at least 8 characters.</p>
     <button @click="signin" class="signin-button">Sign In</button>
   </div>
 </template>
@@ -71,5 +87,10 @@ img {
   &:hover {
     background-color: blue;
   }
+}
+
+.error-text {
+  color: red;
+  font-size: 1.2rem;
 }
 </style>
