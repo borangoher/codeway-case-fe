@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import type { Ref } from 'vue'
 
 export type parameter = {
-  id: number
+  id: string
   key: string
   value: string
   desc: string
@@ -15,7 +15,7 @@ const props = defineProps<{
 }>()
 const emit = defineEmits<{
   (e: 'edit', param: parameter): void
-  (e: 'delete', id: number): void
+  (e: 'delete', id: string): void
 }>()
 
 const isEditing: Ref<boolean> = ref(false)
@@ -26,7 +26,6 @@ function toggleEdit(): void {
 }
 
 function cancelEdit(): void {
-  console.log(props.param)
   paramState.value = props.param
   isEditing.value = false
 }

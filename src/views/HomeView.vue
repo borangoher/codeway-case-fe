@@ -7,21 +7,21 @@ import { RouterLink } from 'vue-router'
 
 const parameters: Ref<[parameter]> = ref([
   {
-    id: 1,
+    id: crypto.randomUUID(),
     key: 'test',
     value: 'test-val',
     desc: 'A test parameter',
     createdDate: new Date(0),
   },
   {
-    id: 2,
+    id: crypto.randomUUID(),
     key: 'test second',
     value: 'test-val',
     desc: 'A test parameter',
     createdDate: new Date(0),
   },
   {
-    id: 3,
+    id: crypto.randomUUID(),
     key: 'test third',
     value: 'test-val',
     desc: 'A test parameter',
@@ -29,11 +29,15 @@ const parameters: Ref<[parameter]> = ref([
   },
 ])
 
-function deleteParam(id: number): void {
+const newKey: Ref<string> = ref('')
+const newValue: Ref<string> = ref('')
+const newDesc: Ref<string> = ref('')
+const isAddFormValid: Ref<boolean> = ref(true)
+
+function deleteParam(id: string): void {
   parameters.value = parameters.value.filter((param: parameter) => {
     return param.id !== id
   })
-  console.log(parameters.value)
 }
 
 function editParam(newParam: parameter): void {
@@ -41,13 +45,33 @@ function editParam(newParam: parameter): void {
     return oldParam.id === newParam.id ? newParam : oldParam
   })
 }
+
+function addParam(): void {
+  if (!newKey.value || !newValue.value || !newDesc.value) {
+    isAddFormValid.value = false
+    return
+  }
+  isAddFormValid.value = true
+
+  parameters.value.push({
+    id: crypto.randomUUID(),
+    key: newKey.value,
+    value: newValue.value,
+    desc: newDesc.value,
+    createdDate: new Date(0),
+  })
+
+  newKey.value = ''
+  newValue.value = ''
+  newDesc.value = ''
+}
 </script>
 
 <template>
   <main>
     <div class="header">
       <img src="../assets/icon.png" alt="Codeway Logo" />
-      <button class="logout-button">
+      <button class="blue-button">
         <router-link to="/signin"> Log Out </router-link>
       </button>
     </div>
@@ -61,6 +85,19 @@ function editParam(newParam: parameter): void {
       <template v-for="parameter in parameters" :key="parameter.id">
         <PropertyConfig :param="parameter" @delete="deleteParam" @edit="editParam" />
       </template>
+      <div class="add-row">
+        <input placeholder="Key" type="text" name="new-key" id="new-key" v-model="newKey" />
+        <input placeholder="Value" type="text" name="new-value" id="new-value" v-model="newValue" />
+        <input
+          placeholder="Description"
+          type="text"
+          name="new-desc"
+          id="new-desc"
+          v-model="newDesc"
+        />
+        <button class="blue-button" @click="addParam">Add</button>
+      </div>
+      <p class="error-text" v-if="!isAddFormValid">Please fill all fields.</p>
     </div>
   </main>
 </template>
@@ -74,6 +111,16 @@ function editParam(newParam: parameter): void {
   margin-bottom: 0.5rem;
 }
 
+.add-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 3fr 1fr;
+  font-size: 1.5rem;
+}
+
+input {
+  width: 75%;
+}
+
 .header {
   display: flex;
   justify-content: space-between;
@@ -82,7 +129,7 @@ function editParam(newParam: parameter): void {
   border-bottom: 4px solid darkblue;
 }
 
-.logout-button {
+.blue-button {
   background-color: darkblue;
   color: white;
   &:hover {
