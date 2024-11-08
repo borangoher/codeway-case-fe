@@ -1,13 +1,18 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import type { Ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const email: Ref<string> = ref('')
 const password: Ref<string> = ref('')
 
+const isEmailValid: Ref<boolean> = ref(true)
+const isPasswordValid: Ref<boolean> = ref(true)
+
 function signin(): void {
-  console.log(email.value)
-  console.log(password.value)
+  router.push('/')
 }
 </script>
 

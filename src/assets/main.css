@@ -23,3 +23,8 @@ button {
   height: 3rem;
   font-size: 2rem;
 }
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
