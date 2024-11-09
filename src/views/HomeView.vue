@@ -34,6 +34,7 @@ const newValue: Ref<string> = ref('')
 const newDesc: Ref<string> = ref('')
 const isAddFormValid: Ref<boolean> = ref(true)
 
+// TODO: connect following methods to the backend
 function deleteParam(id: string): void {
   parameters.value = parameters.value.filter((param: parameter) => {
     return param.id !== id
@@ -65,6 +66,8 @@ function addParam(): void {
   newValue.value = ''
   newDesc.value = ''
 }
+
+//TODO: log out through BE
 </script>
 
 <template>

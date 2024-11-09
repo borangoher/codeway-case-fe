@@ -19,6 +19,7 @@ function validateEmail(email: string): boolean {
     )
 }
 
+// TOOD: sign in through BE
 function signin(): void {
   isEmailValid.value = validateEmail(email.value)
   isPasswordValid.value = password.value.length > 7
