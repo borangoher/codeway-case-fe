@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import type { Ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { auth } from '../main.ts'
+import { signInWithEmailAndPassword } from 'firebase/auth'
 
 const router = useRouter()
 
@@ -19,13 +21,20 @@ function validateEmail(email: string): boolean {
     )
 }
 
-// TOOD: sign in through BE
-function signin(): void {
+async function signin(): void {
   isEmailValid.value = validateEmail(email.value)
   isPasswordValid.value = password.value.length > 7
 
   if (isEmailValid.value && isPasswordValid.value) {
-    router.push('/')
+    signInWithEmailAndPassword(auth, email.value, password.value)
+      .then((userCredential) => {
+        const token = userCredential.user.getIdToken()
+        sessionStorage.setItem('authToken', token)
+        router.push('/')
+      })
+      .catch((error) => {
+        console.error(error)
+      })
   }
 }
 </script>

@@ -3,8 +3,13 @@ import PropertyConfig from '../components/PropertyConfig.vue'
 import type { parameter } from '../components/PropertyConfig.vue'
 import { ref } from 'vue'
 import type { Ref } from 'vue'
-import { RouterLink } from 'vue-router'
+import { auth } from '../main.ts'
+import { signOut } from 'firebase/auth'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
+
+// TODO: get from backend
 const parameters: Ref<[parameter]> = ref([
   {
     id: crypto.randomUUID(),
@@ -67,16 +72,23 @@ function addParam(): void {
   newDesc.value = ''
 }
 
-//TODO: log out through BE
+async function signout(): void {
+  signOut(auth)
+    .then(() => {
+      sessionStorage.removeItem('authToken')
+      router.push('/signin')
+    })
+    .catch((error) => {
+      console.error(error)
+    })
+}
 </script>
 
 <template>
   <main>
     <div class="header">
       <img src="../assets/icon.png" alt="Codeway Logo" />
-      <button class="blue-button">
-        <router-link to="/signin"> Log Out </router-link>
-      </button>
+      <button @click="signout" class="blue-button">Log Out</button>
     </div>
     <div class="container">
       <div class="title-row">
