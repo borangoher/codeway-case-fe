@@ -1,75 +1,105 @@
 <script setup lang="ts">
 import PropertyConfig from '../components/PropertyConfig.vue'
 import type { parameter } from '../components/PropertyConfig.vue'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import type { Ref } from 'vue'
 import { auth } from '../main.ts'
 import { signOut } from 'firebase/auth'
 import { useRouter } from 'vue-router'
+import { apiUrl } from '../env.ts'
 
 const router = useRouter()
 
-// TODO: get from backend
-const parameters: Ref<[parameter]> = ref([
-  {
-    id: crypto.randomUUID(),
-    key: 'test',
-    value: 'test-val',
-    desc: 'A test parameter',
-    createdDate: new Date(0),
-  },
-  {
-    id: crypto.randomUUID(),
-    key: 'test second',
-    value: 'test-val',
-    desc: 'A test parameter',
-    createdDate: new Date(0),
-  },
-  {
-    id: crypto.randomUUID(),
-    key: 'test third',
-    value: 'test-val',
-    desc: 'A test parameter',
-    createdDate: new Date(0),
-  },
-])
+const parameters: Ref<[parameter]> = ref([])
 
 const newKey: Ref<string> = ref('')
 const newValue: Ref<string> = ref('')
 const newDesc: Ref<string> = ref('')
 const isAddFormValid: Ref<boolean> = ref(true)
 
-// TODO: connect following methods to the backend
-function deleteParam(id: string): void {
-  parameters.value = parameters.value.filter((param: parameter) => {
-    return param.id !== id
+async function deleteParam(id: string): void {
+  const token = sessionStorage.getItem('authToken')
+  const response = await fetch(`${apiUrl}/parameters`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ id: id }),
   })
+
+  if (response.ok) {
+    const data = await response.json()
+    parameters.value = data.params
+  }
 }
 
-function editParam(newParam: parameter): void {
-  parameters.value = parameters.value.map((oldParam: parameter) => {
-    return oldParam.id === newParam.id ? newParam : oldParam
+async function editParam(newParam: parameter): void {
+  const token = sessionStorage.getItem('authToken')
+  const response = await fetch(`${apiUrl}/parameters`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(newParam),
   })
+
+  if (response.ok) {
+    const data = await response.json()
+    parameters.value = data.params
+  }
 }
 
-function addParam(): void {
+async function getParams(): void {
+  const token = sessionStorage.getItem('authToken')
+  const response = await fetch(`${apiUrl}/parameters`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  })
+
+  if (response.ok) {
+    const data = await response.json()
+    parameters.value = data.params
+  }
+}
+
+async function addParam(): void {
   if (!newKey.value || !newValue.value || !newDesc.value) {
     isAddFormValid.value = false
     return
   }
   isAddFormValid.value = true
 
-  parameters.value.push({
+  const newParam: parameter = {
     id: crypto.randomUUID(),
     key: newKey.value,
     value: newValue.value,
     desc: newDesc.value,
-    createdDate: new Date(0),
-  })
+    createdDate: Date().now,
+  }
 
   newKey.value = ''
   newValue.value = ''
   newDesc.value = ''
+
+  const token = sessionStorage.getItem('authToken')
+  const response = await fetch(`${apiUrl}/parameters`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(newParam),
+  })
+
+  if (response.ok) {
+    const data = await response.json()
+    parameters.value = data.params
+  }
 }
 
 async function signout(): void {
@@ -82,6 +112,8 @@ async function signout(): void {
       console.error(error)
     })
 }
+
+onMounted(getParams)
 </script>
 
 <template>

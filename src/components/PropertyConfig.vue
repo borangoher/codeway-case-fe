@@ -7,7 +7,7 @@ export type parameter = {
   key: string
   value: string
   desc: string
-  createdDate: Date
+  createdDate: number
 }
 
 const props = defineProps<{
@@ -27,6 +27,7 @@ function toggleEdit(): void {
 
 function cancelEdit(): void {
   paramState.value = props.param
+  console.log(paramState.value)
   isEditing.value = false
 }
 function saveChanges(): void {
@@ -70,7 +71,7 @@ function deleteParam(): void {
       <p>{{ paramState.desc }}</p>
     </template>
 
-    <p>{{ paramState.createdDate.toLocaleString() }}</p>
+    <p>{{ new Date(paramState.createdDate).toLocaleString() }}</p>
 
     <div class="button-container">
       <template v-if="isEditing">
@@ -87,7 +88,7 @@ function deleteParam(): void {
 
 <style scoped>
 .param-line {
-  height: 5rem;
+  min-height: 5rem;
   font-size: 1.5rem;
   display: grid;
   grid-template-columns: 1fr 1fr 2fr 1fr 1fr;
