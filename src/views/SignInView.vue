@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import type { Ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { auth } from '../main.ts'
+import { auth } from '../main'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 
 const router = useRouter()
@@ -14,22 +14,22 @@ const isEmailValid: Ref<boolean> = ref(true)
 const isPasswordValid: Ref<boolean> = ref(true)
 
 function validateEmail(email: string): boolean {
-  return email
+  return !!email
     .toLowerCase()
     .match(
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
     )
 }
 
-async function signin(): void {
+async function signin(): Promise<void> {
   isEmailValid.value = validateEmail(email.value)
   isPasswordValid.value = password.value.length > 7
 
   if (isEmailValid.value && isPasswordValid.value) {
     signInWithEmailAndPassword(auth, email.value, password.value)
-      .then((userCredential) => {
-        const token = userCredential.user.getIdToken()
-        sessionStorage.setItem('authToken', token)
+      .then(async (userCredential) => {
+        const token = await userCredential.user.getIdToken()
+        await sessionStorage.setItem('authToken', token)
         router.push('/')
       })
       .catch((error) => {

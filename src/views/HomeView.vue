@@ -3,22 +3,22 @@ import PropertyConfig from '../components/PropertyConfig.vue'
 import type { parameter } from '../components/PropertyConfig.vue'
 import { ref, onMounted } from 'vue'
 import type { Ref } from 'vue'
-import { auth } from '../main.ts'
+import { auth } from '../main'
 import { signOut } from 'firebase/auth'
 import { useRouter } from 'vue-router'
-import { apiUrl } from '../env.ts'
+import { apiUrl } from '../env'
 
 const router = useRouter()
 
-const parameters: Ref<[parameter]> = ref([])
+const parameters: Ref<parameter[]> = ref([])
 
 const newKey: Ref<string> = ref('')
 const newValue: Ref<string> = ref('')
 const newDesc: Ref<string> = ref('')
 const isAddFormValid: Ref<boolean> = ref(true)
 
-async function deleteParam(id: string): void {
-  const token = sessionStorage.getItem('authToken')
+async function deleteParam(id: string): Promise<void> {
+  const token = await sessionStorage.getItem('authToken')
   const response = await fetch(`${apiUrl}/parameters`, {
     method: 'DELETE',
     headers: {
@@ -34,8 +34,8 @@ async function deleteParam(id: string): void {
   }
 }
 
-async function editParam(newParam: parameter): void {
-  const token = sessionStorage.getItem('authToken')
+async function editParam(newParam: parameter): Promise<void> {
+  const token = await sessionStorage.getItem('authToken')
   const response = await fetch(`${apiUrl}/parameters`, {
     method: 'POST',
     headers: {
@@ -51,8 +51,8 @@ async function editParam(newParam: parameter): void {
   }
 }
 
-async function getParams(): void {
-  const token = sessionStorage.getItem('authToken')
+async function getParams(): Promise<void> {
+  const token = await sessionStorage.getItem('authToken')
   const response = await fetch(`${apiUrl}/parameters`, {
     method: 'GET',
     headers: {
@@ -67,7 +67,7 @@ async function getParams(): void {
   }
 }
 
-async function addParam(): void {
+async function addParam(): Promise<void> {
   if (!newKey.value || !newValue.value || !newDesc.value) {
     isAddFormValid.value = false
     return
@@ -79,7 +79,7 @@ async function addParam(): void {
     key: newKey.value,
     value: newValue.value,
     desc: newDesc.value,
-    createdDate: Date().now,
+    createdDate: Date.now(),
   }
 
   newKey.value = ''
@@ -102,7 +102,7 @@ async function addParam(): void {
   }
 }
 
-async function signout(): void {
+async function signout(): Promise<void> {
   signOut(auth)
     .then(() => {
       sessionStorage.removeItem('authToken')
