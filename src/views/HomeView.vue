@@ -188,4 +188,30 @@ input {
 img {
   width: 5rem;
 }
+
+@media (max-width: 900px) {
+  .title-row {
+    display: none;
+  }
+
+  .add-row {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border: 2px dashed darkblue;
+    align-items: flex-start;
+    padding: 1rem;
+    margin: 1rem;
+
+    input {
+      width: 100%;
+    }
+  }
+
+  .container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+  }
+}
 </style>

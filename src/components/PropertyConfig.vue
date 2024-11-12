@@ -121,4 +121,16 @@ function deleteParam(): void {
 .param-input {
   width: 75%;
 }
+
+@media (max-width: 900px) {
+  .param-line {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border: 2px dashed darkblue;
+    align-items: flex-start;
+    padding: 1rem;
+    margin: 1rem;
+  }
+}
 </style>
